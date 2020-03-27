@@ -31,6 +31,7 @@ def convert(file_path):
             writer.writeheader()
         
             print_info("writing data for t: %d" % time)
+            
             for z in range(len(rootgrp.variables["zlev"])):
                 zlev = rootgrp.variables["zlev"][z]
                 for lat in range(len(rootgrp.variables["lat"])):
@@ -44,12 +45,12 @@ def convert(file_path):
                             writer.writerow({'time' : time, 'zlev': zlev, 'lat': lattitude, 'lon': longitude, 'u': uVal, 'v': vVal, 'w': wVal})
                         else:
                             writer.writerow({'time' : time, 'zlev': zlev, 'lat': lattitude, 'lon': longitude, 'u': uVal, 'v': vVal})
-
+        
     rootgrp.close()
     end = datetime.now()
     duration = end - start
-    mins = duration / 60
-    print_info("Finised converting %s" % file)
+    mins = duration.total_seconds() / 60.0
+    print_info("Finised converting %s" % file_name)
     print_info("Processing time: %f minutes" % mins)
     print_line()
 
@@ -70,8 +71,6 @@ def main():
     ncFile = args.file
     ncFolder = args.folder
 
-   
-    
     files_to_convert = []
 
     if ncFolder is None and ncFile is not None:
@@ -100,7 +99,7 @@ def main():
         convert(file)
     end = datetime.now()
     duration = end - start
-    mins = duration / 60
+    mins = duration.total_seconds() / 60.0
     print_info("Finished converting all .nc files to .csv files.")
     print_info("Processing time: %f minutes" % mins)
     print_info("You can find all generated .csv files in %s" % os.path.basename(files_to_convert[0]))
@@ -116,7 +115,7 @@ def print_warning(warning_text):
     #prints in red
     print('\033[91m' + warning_text + '\033[0m')
 
-os.system('color')
+#os.system('color')
 print_line()
 try:
     from netCDF4 import Dataset
